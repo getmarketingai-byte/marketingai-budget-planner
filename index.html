@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marketing Budget Planner | MarketingAI</title>
-    <meta name="description" content="Plan your marketing budget based on revenue targets. Calculate how much you need to spend to hit your goals.">
+    <meta name="description" content="Plan your marketing budget based on revenue targets. Calculate required customers, leads, clicks, and ad spend.">
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2Q8MGZ47BC"></script>
     <script>
@@ -61,7 +61,6 @@
         .nav-links a { color: #fff; text-decoration: none; padding: 10px 20px; background: rgba(255,255,255,0.15); border-radius: 8px; transition: background 0.2s; }
         .nav-links a:hover { background: rgba(255,255,255,0.25); }
         .disclaimer { margin-top: 30px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; color: rgba(255,255,255,0.8); font-size: 0.85rem; text-align: center; }
-        .ad-container { margin-top: 30px; text-align: center; }
     </style>
 </head>
 <body>
@@ -72,81 +71,79 @@
         </header>
 
         <div class="calculator">
-            <div class="input-group">
-                <label for="revenueTarget">Annual Revenue Target</label>
-                <div class="input-wrapper">
-                    <input type="number" id="revenueTarget" placeholder="500000" min="1">
-                    <span class="input-suffix">AUD</span>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label for="dealSize">Average Deal Size</label>
-                <div class="input-wrapper">
-                    <input type="number" id="dealSize" placeholder="5000" min="1">
-                    <span class="input-suffix">AUD</span>
-                </div>
-            </div>
-
             <div class="input-row">
                 <div class="input-group">
-                    <label for="closeRate">Lead Close Rate</label>
+                    <label for="revenueTarget">Revenue Target</label>
                     <div class="input-wrapper">
-                        <input type="number" id="closeRate" placeholder="20" min="0" max="100" step="0.1">
-                        <span class="input-suffix">%</span>
+                        <input type="number" id="revenueTarget" placeholder="50000" min="1">
+                        <span class="input-suffix">USD</span>
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label for="leadConvRate">Lead Conversion Rate</label>
+                    <label for="dealSize">Deal Size</label>
                     <div class="input-wrapper">
-                        <input type="number" id="leadConvRate" placeholder="10" min="0" max="100" step="0.1">
-                        <span class="input-suffix">%</span>
+                        <input type="number" id="dealSize" placeholder="1000" min="1">
+                        <span class="input-suffix">USD</span>
                     </div>
                 </div>
             </div>
 
             <div class="input-row">
                 <div class="input-group">
-                    <label for="cpc">Cost Per Lead</label>
+                    <label for="convRate">Lead Conversion Rate</label>
                     <div class="input-wrapper">
-                        <input type="number" id="cpc" placeholder="50" min="0" step="1">
-                        <span class="input-suffix">AUD</span>
+                        <input type="number" id="convRate" placeholder="10" min="0.1" max="100" step="0.1">
+                        <span class="input-suffix">%</span>
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label for="targetLeads">Target Monthly Leads</label>
+                    <label for="clickToLeadRate">Click to Lead Rate</label>
                     <div class="input-wrapper">
-                        <input type="number" id="targetLeads" placeholder="20" min="1">
+                        <input type="number" id="clickToLeadRate" placeholder="5" min="0.1" max="100" step="0.1">
+                        <span class="input-suffix">%</span>
                     </div>
                 </div>
             </div>
 
-            <button class="calculate-btn" onclick="calculateBudget()">Calculate Required Budget</button>
+            <div class="input-group">
+                <label for="cpc">Cost Per Click (CPC)</label>
+                <div class="input-wrapper">
+                    <input type="number" id="cpc" placeholder="2.50" min="0.01" step="0.01">
+                    <span class="input-suffix">USD</span>
+                </div>
+            </div>
+
+            <button class="calculate-btn" onclick="calculateBudget()">Calculate Budget</button>
 
             <div class="results" id="results">
                 <h2>Your Marketing Budget Plan</h2>
                 <div class="result-cards">
                     <div class="result-card">
-                        <div class="label">Monthly Budget Needed</div>
-                        <div class="value" id="monthlyBudget">$0</div>
-                        <div class="sub">to hit your target</div>
+                        <div class="label">Required Customers</div>
+                        <div class="value" id="customers">0</div>
+                        <div class="sub">to hit revenue target</div>
                     </div>
                     <div class="result-card">
-                        <div class="label">Annual Budget Required</div>
-                        <div class="value" id="annualBudget">$0</div>
-                        <div class="sub">for full year</div>
+                        <div class="label">Required Leads</div>
+                        <div class="value" id="leads">0</div>
+                        <div class="sub">based on conversion rate</div>
                     </div>
                     <div class="result-card">
-                        <div class="label">Leads Needed (Monthly)</div>
-                        <div class="value" id="leadsNeeded">0</div>
-                        <div class="sub">to close target deals</div>
+                        <div class="label">Required Clicks</div>
+                        <div class="value" id="clicks">0</div>
+                        <div class="sub">based on click-to-lead rate</div>
                     </div>
                     <div class="result-card highlight">
-                        <div class="label">Budget as % of Revenue</div>
-                        <div class="value" id="budgetPercent">0%</div>
-                        <div class="sub">marketing investment</div>
+                        <div class="label">Monthly Budget</div>
+                        <div class="value" id="monthlyBudget">$0</div>
+                        <div class="sub">estimated ad spend</div>
+                    </div>
+                    <div class="result-card highlight">
+                        <div class="label">Annual Budget</div>
+                        <div class="value" id="annualBudget">$0</div>
+                        <div class="sub">12-month projection</div>
                     </div>
                 </div>
 
@@ -172,45 +169,26 @@
         function calculateBudget() {
             const revenueTarget = parseFloat(document.getElementById('revenueTarget').value) || 0;
             const dealSize = parseFloat(document.getElementById('dealSize').value) || 0;
-            const closeRate = parseFloat(document.getElementById('closeRate').value) || 0;
-            const leadConvRate = parseFloat(document.getElementById('leadConvRate').value) || 0;
+            const convRate = parseFloat(document.getElementById('convRate').value) || 0;
+            const clickToLeadRate = parseFloat(document.getElementById('clickToLeadRate').value) || 0;
             const cpc = parseFloat(document.getElementById('cpc').value) || 0;
-            const targetLeads = parseFloat(document.getElementById('targetLeads').value) || 0;
 
-            if (dealSize <= 0) {
-                alert('Please enter a valid average deal size.');
+            if (revenueTarget <= 0 || dealSize <= 0 || convRate <= 0 || clickToLeadRate <= 0 || cpc <= 0) {
+                alert('Please enter valid values for all fields.');
                 return;
             }
 
-            let monthlyBudget, leadsNeeded, leadsPerMonth, budgetPercent;
-            
-            if (cpc > 0 && targetLeads > 0) {
-                monthlyBudget = cpc * targetLeads;
-                leadsPerMonth = targetLeads;
-            } else if (revenueTarget > 0 && dealSize > 0 && closeRate > 0 && leadConvRate > 0) {
-                const annualDeals = revenueTarget / dealSize;
-                const annualLeads = annualDeals / (closeRate / 100);
-                leadsPerMonth = Math.ceil(annualLeads / 12);
-                monthlyBudget = cpc > 0 ? cpc * leadsPerMonth : monthlyBudget || 0;
-            } else {
-                alert('Please fill in at least revenue target, deal size, close rate, and lead conversion rate, OR cost per lead and target monthly leads.');
-                return;
-            }
-
-            if (monthlyBudget <= 0 && revenueTarget > 0 && dealSize > 0 && closeRate > 0 && leadConvRate > 0) {
-                const annualDeals = revenueTarget / dealSize;
-                const annualLeads = annualDeals / (closeRate / 100);
-                leadsPerMonth = Math.ceil(annualLeads / 12);
-                monthlyBudget = cpc > 0 ? cpc * leadsPerMonth : 1000;
-            }
-
+            const customers = Math.ceil(revenueTarget / dealSize);
+            const leads = Math.ceil(customers / (convRate / 100));
+            const clicks = Math.ceil(leads / (clickToLeadRate / 100));
+            const monthlyBudget = clicks * cpc;
             const annualBudget = monthlyBudget * 12;
-            budgetPercent = revenueTarget > 0 ? (annualBudget / revenueTarget) * 100 : 0;
 
-            document.getElementById('monthlyBudget').textContent = '$' + Math.round(monthlyBudget).toLocaleString('en-AU');
-            document.getElementById('annualBudget').textContent = '$' + Math.round(annualBudget).toLocaleString('en-AU');
-            document.getElementById('leadsNeeded').textContent = leadsPerMonth.toLocaleString();
-            document.getElementById('budgetPercent').textContent = Math.round(budgetPercent) + '%';
+            document.getElementById('customers').textContent = customers.toLocaleString();
+            document.getElementById('leads').textContent = leads.toLocaleString();
+            document.getElementById('clicks').textContent = clicks.toLocaleString();
+            document.getElementById('monthlyBudget').textContent = '$' + monthlyBudget.toLocaleString('en-AU', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+            document.getElementById('annualBudget').textContent = '$' + annualBudget.toLocaleString('en-AU', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
             document.getElementById('results').classList.add('visible');
         }
